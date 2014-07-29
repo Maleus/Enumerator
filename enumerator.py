@@ -14,10 +14,9 @@ import nmap
 import time
 import ftplib
 
-print "Looking for low hanging fruit hang on..."
-time.sleep(20)
-print "Still lookin, patience young padewan..."
-
+if len(sys.argv) != 2:	
+	print "Usage ./enumerator.py <ip>"
+	sys.exit(1)
 IP = sys.argv[1] # IP address
 os.system("mkdir /root/Desktop/"+IP) # Creates a directory on your Desktop
 nm = nmap.PortScanner() # Initialize Nmap module
@@ -25,6 +24,7 @@ nm.scan(IP, '80,443,22,21,139,445') # Target ports
 nm.command_line()
 nm.scaninfo()
 
+print "Looking for low hanging fruit hang on..."
 ###########################
 def ftp(): # Attempts to login to FTP using anonymous user
 	try:
