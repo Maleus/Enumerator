@@ -1,6 +1,6 @@
 ####
 ####
-#### Install python Nmap module http://xael.org/norman/python/python-nmap/
+#### Install python Nmap module http://xael.org/norman/python/python-nmap/python-nmap-0.1.4.tar.gz
 ####
 ####
 ####
