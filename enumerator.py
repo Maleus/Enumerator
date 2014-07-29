@@ -20,6 +20,7 @@ import os
 import nmap
 import time
 import ftplib
+import subprocess
 
 if len(sys.argv) != 2:	
 	print "Usage ./enumerator.py <ip>"
@@ -40,7 +41,6 @@ def ftp(): # Attempts to login to FTP using anonymous user
 		print "\o/"
 		print "FTP ALLOWS ANONYMOUS ACCESS!"
 		print "o/\o"
-		print "*" * 10
 		ftp.quit()
 	except:
 		print "FTP does not allow anonymous access :("
@@ -60,8 +60,10 @@ def dirb_https(): # Runs dirb on https pages.
 
 ###########################
 def enum4linux(): # Runs enum4linux on the target machine.
-	os.system('xterm -hold -e enum4linux '+IP+' > /root/Desktop/'+IP+'/smb_info.txt &')
-	print 'Running enum4linux on target machine - ****DO NOT CLOSE ENUM4LINUX WINDOW - COPY CONTENTS TO SMB_INFO.TXT ****.'
+	proc = subprocess.Popen('enum4linux '+IP+' > /root/Desktop/'+IP+'/smb_info.txt &', shell = True)
+	stdout,stderr = proc.communicate()
+	print 'Beginning enum4linux - this may take a few minutes to complete. - Info will be available in the smb_info.txt file -'
+	
 ###########################
 
 ###########################
@@ -97,25 +99,23 @@ for port in lport:
 # Function Checks
 if nm[host].has_tcp(21) and nm[IP]['tcp'][21]['state'] == 'open':
 	print "*" * 10
-	print "FTP FOUND - CHECKING FOR ANONYMOUS ACCESS"
+	print "FTP Found - Checking for anonymous access."
 	ftp()
 if nm[host].has_tcp(80) and nm[IP]['tcp'][80]['state'] == 'open':
 	dirb()
 if nm[host].has_tcp(443) and nm[IP]['tcp'][443]['state'] == 'open':
 	dirb_https()
-if nm[host].has_tcp(139) and nm[IP]['tcp'][139]['state'] == 'open' or nm[host].has_tcp(445) and nm[IP]['tcp'][445]['state'] == 'open':
-	enum4linux()
 if nm[host].has_tcp(80) and nm[IP]['tcp'][80]['state'] == 'open':
 	nikto()
 if nm[host].has_tcp(443) and nm[IP]['tcp'][443]['state'] == 'open':
 	nikto_https()
+if nm[host].has_tcp(139) and nm[IP]['tcp'][139]['state'] == 'open' or nm[host].has_tcp(445) and nm[IP]['tcp'][445]['state'] == 'open':
+        enum4linux()
 
 #Nmap Service Scan
-print "#" * 10
 print "Beginning Service Scan of all ports... Your pwnage can begin soon..."
 print "#" * 10
-
-os.system("nmap -sV -p- -v -T4 -oN /root/Desktop/"+IP+"/service_scan.txt "+IP) # Full TCP scan of all 65535 ports
+os.system("nmap -A -p- -T4 -oN /root/Desktop/"+IP+"/service_scan.txt "+IP) # Full TCP scan of all 65535 ports
 
 
 
