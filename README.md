@@ -7,4 +7,4 @@ It will look for common ports, and execute additional scanners based on the find
 
 Requires Nmap module http://xael.org/norman/python/python-nmap/#download for use.
 
-Usage ./enumerator.py <ip>
+Usage ./enumerator.py ip.address.here
