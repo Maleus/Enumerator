@@ -1,3 +1,5 @@
+####
+####
 #### Install python Nmap module http://xael.org/norman/python/python-nmap/
 ####
 ####
@@ -6,6 +8,11 @@
 #### Usage: ./enumerate.py <ip address>
 ####
 ####
+####
+#### Author: Maleus
+#### 7.28.14
+####
+
 
 #!/bin/python
 import sys
