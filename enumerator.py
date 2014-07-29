@@ -10,11 +10,9 @@
 #!/bin/python
 import sys
 import os
-import subprocess
 import nmap
 import time
 import ftplib
-import shlex
 
 print "Looking for low hanging fruit hang on..."
 time.sleep(20)
