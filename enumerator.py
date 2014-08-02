@@ -66,6 +66,8 @@ def nikto_443():
 	os.system('xterm -hold -e nikto -host https://'+IP+' -output '+NIKTO_443+' &')
 	print 'Running Nikto against port 443 - Check target folder for output file.'
 
+#def has_open_port(port_num):
+#	return nm[IP]['tcp'][port_num]['state'] == 'open':
 
 for host in nm.all_hosts():
 	print('--------------------')
@@ -84,29 +86,40 @@ for port in lport:
 	print('port: %s\tstate: %s' % (port, nm[host][proto][port]['state']))
 	print('--------------------')
 
-# Function Checks
-if nm[host].has_tcp(21) and nm[IP]['tcp'][21]['state'] == 'open':
-	print "*" * 10
-	print "FTP Found - Checking for anonymous access."
+def has_open_port(port_num):
+	return nm[IP]['tcp'][port_num]['state'] == 'open'
+
+if has_open_port(21):
 	ftp()
-if nm[host].has_tcp(80) and nm[IP]['tcp'][80]['state'] == 'open':
+if has_open_port(80):
 	dirb_80()
-if nm[host].has_tcp(443) and nm[IP]['tcp'][443]['state'] == 'open':
-	dirb_443()
-if nm[host].has_tcp(80) and nm[IP]['tcp'][80]['state'] == 'open':
 	nikto_80()
-if nm[host].has_tcp(443) and nm[IP]['tcp'][443]['state'] == 'open':
+if has_open_port(443):
+	dirb_443()
 	nikto_443()
-if nm[host].has_tcp(139) and nm[IP]['tcp'][139]['state'] == 'open' or nm[host].has_tcp(445) and nm[IP]['tcp'][445]['state'] == 'open':
-        enum4linux()
+if has_open_port(139):
+	enum4linux()
+if has_open_port(445):
+	enum4linux()
+# Function Checks
+#if nm[host].has_tcp(21) and nm[IP]['tcp'][21]['state'] == 'open':
+#	print "*" * 10
+#	print "FTP Found - Checking for anonymous access."
+#	ftp()
+#if nm[host].has_tcp(80) and nm[IP]['tcp'][80]['state'] == 'open':
+#	dirb_80()
+#if nm[host].has_tcp(443) and nm[IP]['tcp'][443]['state'] == 'open':
+#	dirb_443()
+#if nm[host].has_tcp(80) and nm[IP]['tcp'][80]['state'] == 'open':
+#	nikto_80()
+#if nm[host].has_tcp(443) and nm[IP]['tcp'][443]['state'] == 'open':
+#	nikto_443()
+#if nm[host].has_tcp(139) and nm[IP]['tcp'][139]['state'] == 'open' or nm[host].has_tcp(445) and nm[IP]['tcp'][445]['state'] == 'open':
+#       enum4linux()
 
 #Nmap Service Scan
 print "Beginning Service Scan of all ports... Your pwnage can begin soon..."
 NMAP_INFO = os.path.join(OUTPUT_DIRECTORY, 'nmap_full.txt')# Nmap full service info file
 os.system('nmap -A -p- -T4 -oN '+NMAP_INFO+' '+IP) # Full TCP scan of all 65535 ports
-
-
-
-
 
 
