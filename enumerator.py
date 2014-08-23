@@ -115,10 +115,6 @@ if has_open_port(445):
 #Nmap Service Scan
 NMAP_INFO = os.path.join(OUTPUT_DIRECTORY, 'nmap_full.txt')# Nmap full service info file
 os.system('nmap -A -p- -T4 -oN '+NMAP_INFO+' '+IP) # Full TCP scan of all 65535 ports
-try:
-	os.remove('.hydra_21.txt')
-except OSError:
-	pass
 
 print "Enumeration complete... Please pwn responsibly"
 
