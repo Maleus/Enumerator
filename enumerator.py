@@ -69,7 +69,7 @@ def nikto_443():# Runs Nikto on port 443
 
 def hydra_21():#Runs hydra on port 21
 	password_file = open('.hydra_21.txt','w')
-	password_list = ["root","admin","toor", "letmein", "changeme", "administrator","password","1","12","123","1234","12345","123456","1234567","12345678","1234567890",]
+	password_list = ["root","admin","toor", "letmein", "changeme", "administrator","password","1","12","123","1234","12345","123456","1234567","12345678","1234567890","ftp"]
 	password_file.write("\n".join(map(lambda x: str(x), password_list))+'\n')
 	password_file.close()
 	HYDRA_21 = os.path.join(OUTPUT_DIRECTORY, 'ftp_accounts.txt')
