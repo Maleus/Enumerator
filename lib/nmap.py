@@ -109,7 +109,7 @@ def scan(ip, directory):
         start_processes(process, ip, output_dir)
 
     # nmap scans have completed at this point, send results to delegation system.
-    delegation_result = delegate_service_enumeration.send('enumerator.lib.nmap', scan_results=parse_results(ip, output_dir))
+    delegation_result = delegate_service_enumeration.send('enumerator.lib.nmap', scan_results=parse_results(ip, output_dir), directory=output_dir)
 
 if __name__ == '__main__':
     scan(sys.argv[1],sys.argv[2])
