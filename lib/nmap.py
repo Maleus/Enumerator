@@ -94,16 +94,9 @@ def scan(ip, directory):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    # fire off tcp scan
     print '   [-] nmap: running TCP & UDP scans for host: %s' % ip
-    jobs = []
     for process in [PROCESS_TCP, PROCESS_UDP]:
-        p = multiprocessing.Process(target=start_processes, args=(process, ip, output_dir))
-        jobs.append(p)
-        p.start()
-    p.join()
-
-    time.sleep(5)
+        start_processes(process, ip, output_dir)
 
     # nmap scans have completed at this point, parse file output
     print parse_results(ip, output_dir)
