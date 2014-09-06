@@ -8,14 +8,21 @@ import time
 import subprocess
 import multiprocessing
 from multiprocessing import Process
-# from blinker import signal
+from blinker import signal
 
-PROCESS_TCP = 'nmap -Pn -T4 -sS -sV -p- -oN %(output_dir)s/%(host)s-tcp-standard.txt -oG %(output_dir)s/%(host)s-tcp-greppable.txt %(host)s'
-PROCESS_UDP = 'nmap -Pn -T4 -sU -sV --top-ports 100 -oN %(output_dir)s/%(host)s-udp-standard.txt -oG %(output_dir)s/%(host)s-udp-greppable.txt %(host)s'
+import delegator
+
+# TODO: Change these values when ready to distribute.
+PROCESS_TCP = 'nmap -Pn -T4 -sS -sV -oN %(output_dir)s/%(host)s-tcp-standard.txt -oG %(output_dir)s/%(host)s-tcp-greppable.txt %(host)s'
+PROCESS_UDP = 'nmap -Pn -T4 -sU -sV --open --top-ports 10 -oN %(output_dir)s/%(host)s-udp-standard.txt -oG %(output_dir)s/%(host)s-udp-greppable.txt %(host)s'
 
 # Very broad match for greppable nmap output.
 # e.g. will match: 22/open/tcp//tcpwrapped///, 8081/open/tcp//http//Node.js (Express middleware)/
 SERVICE_PATTERN = re.compile(r'Ports: (\d+\/.+\/)')
+
+# Instantiate signal to delegate further service enumeration.
+delegate_service_enumeration = signal('delegate_service_enumeration')
+delegate_service_enumeration.connect(delegator.receive_service_data)
 
 def parse_results(ip, directory):
     """Find greppable nmap scan output, extract service data
@@ -64,9 +71,12 @@ def parse_results(ip, directory):
                     'service': service,
                     'version': version,
                 })
-            except:
-                # TODO: debug exceptions
-                pass
+            except Exception as exception:
+                print '   [!] Error parsing service details for IP: %s, protocol: %s' % (ip, protocol)
+                print '   [!] Exception: %s' % exception
+
+        # clean up scan files used for enumerator, standard nmap output files can stay.
+        os.remove(output_file)
 
     return results
 
@@ -98,8 +108,8 @@ def scan(ip, directory):
     for process in [PROCESS_TCP, PROCESS_UDP]:
         start_processes(process, ip, output_dir)
 
-    # nmap scans have completed at this point, parse file output
-    print parse_results(ip, output_dir)
+    # nmap scans have completed at this point, send results to delegation system.
+    delegation_result = delegate_service_enumeration.send('enumerator.lib.nmap', scan_results=parse_results(ip, output_dir))
 
 if __name__ == '__main__':
     scan(sys.argv[1],sys.argv[2])
