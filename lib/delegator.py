@@ -20,8 +20,13 @@ def receive_service_data(sender=None, **kw):
     udp_services = results[ip]['udp']
 
     for tcp_service in tcp_services:
-        if 'http' in tcp_service.get('service') and tcp_service.get('state') == 'open':
-            http.scan(ip, tcp_service.get('port'), directory)
+        service, port, state = tcp_service.get('service'), tcp_service.get('port'), tcp_service.get('state')
+
+        if (
+            'http' in service and 'proxy' not in service \
+            or port in ['8081']
+        ) and state == 'open':
+            http.scan(ip, tcp_service.get('port'), working_directory)
 
     # TODO: When UDP service enumeration tools are available, do as I'm doing above.
 

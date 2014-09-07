@@ -26,7 +26,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     file_contents = args.filepath.read()
-    current_dir = os.path.dirname(os.path.realpath(__file__))
+    current_dir = '%s/results' % os.path.dirname(os.path.realpath(__file__))
     
     ip_list = []
 

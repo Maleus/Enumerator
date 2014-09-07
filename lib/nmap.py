@@ -72,8 +72,9 @@ def parse_results(ip, directory):
                     'version': version,
                 })
             except Exception as exception:
-                print '   [!] Error parsing service details for IP: %s, protocol: %s' % (ip, protocol)
-                print '   [!] Exception: %s' % exception
+                # print '   [!] Error parsing service details for IP: %s, protocol: %s' % (ip, protocol)
+                # print '   [!] Exception: %s' % exception
+                pass
 
         # clean up scan files used for enumerator, standard nmap output files can stay.
         os.remove(output_file)
