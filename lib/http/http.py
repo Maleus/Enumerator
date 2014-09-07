@@ -2,8 +2,6 @@
 
 import sys
 import subprocess
-import multiprocessing
-from multiprocessing import Process
 
 PROCESS_NIKTO = 'nikto -F txt -o %(output_dir)s/%(host)s-http-%(port)s-nikto.txt -h %(host)s -p %(port)s'
 PROCESS_DIRB = 'dirb %(url)s %(wordlist)s -o %(output_dir)s/%(host)s-http-%(port)s-dirb.txt -r -S -w'

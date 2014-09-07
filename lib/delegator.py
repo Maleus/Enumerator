@@ -22,11 +22,15 @@ def receive_service_data(sender=None, **kw):
     for tcp_service in tcp_services:
         service, port, state = tcp_service.get('service'), tcp_service.get('port'), tcp_service.get('state')
 
+        # ruleset for initiating http enumeration.
         if (
             'http' in service and 'proxy' not in service \
             or port in ['8081']
         ) and state == 'open':
-            http.scan(ip, tcp_service.get('port'), working_directory)
+            http.scan(ip, port, working_directory)
+
+        if 'ftp' in service and state == 'open':
+            ftp.scan(ip, port, working_directory)
 
     # TODO: When UDP service enumeration tools are available, do as I'm doing above.
 
