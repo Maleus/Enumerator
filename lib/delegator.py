@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
-from http import http
-from ftp import ftp
-from nbt import nbt
+from http.http import HttpEnumeration
+from ftp.ftp import FtpEnumeration
+from nbt.nbt import NbtEnumeration
 
 def receive_service_data(sender=None, **kw):
     """Receive data either directly (not implemented) or via signal. Delegate 
@@ -28,12 +28,15 @@ def receive_service_data(sender=None, **kw):
             'http' in service and 'proxy' not in service \
             or port in ['8081']
         ) and state == 'open':
+            http = HttpEnumeration()
             http.scan(ip, port, working_directory)
 
         if 'ftp' in service and state == 'open':
+            ftp = FtpEnumeration()
             ftp.scan(ip, port, working_directory)
 
         if port == '445' and state == 'open':
+            nbt = NbtEnumeration()
             nbt.scan(ip, working_directory)
 
     # TODO: When UDP service enumeration tools are available, do as I'm doing above.
