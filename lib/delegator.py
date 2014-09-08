@@ -1,20 +1,42 @@
 #!/usr/bin/env python
+"""The delegator module
+receives nmap scan result data
+and, based on a set of rules, will
+delegate more service-specific 
+enumeration.
 
-from http.http import HttpEnumeration
-from ftp.ftp import FtpEnumeration
-from nbt.nbt import NbtEnumeration
+@author: Steve Coward (steve<at>sugarstack.io)
+@version: 1.0
+"""
+from .http.http import HttpEnumeration
+from .ftp.ftp import FtpEnumeration
+from .nbt.nbt import NbtEnumeration
 
-def receive_service_data(sender=None, **kw):
+def is_http(service, port, state):
+    """ Ruleset for classifying an http service."""
+    return (
+        'http' in service and 'proxy' not in service \
+        or port in ['8081']
+    ) and state == 'open'
+
+def is_ftp(service, port, state):
+    """ Ruleset for classifying an ftp service."""
+    return 'ftp' in service and state == 'open'
+
+def is_nbt(service, port, state):
+    """ Ruleset for classifying a netbios service."""
+    return port == '445' and state == 'open'
+
+def receive_service_data(sender=None, **flags):
     """Receive data either directly (not implemented) or via signal. Delegate 
     service enumeration depending on reported services.
 
-    Keyword arguments:
-    sender -- Name value of where the signal was sent from (default: None)
-    kw -- Keyword argument. IP scan results are passed as a dict.
+    @param sender: Name value of where the signal was sent from (default: None)
+    @param flags: IP scan results are passed as a dict.
     """
 
-    results = kw.get('scan_results')
-    working_directory = kw.get('directory')
+    results = flags.get('scan_results')
+    working_directory = flags.get('directory')
     ip = results.keys()[0]
 
     tcp_services = results[ip]['tcp']
@@ -23,19 +45,15 @@ def receive_service_data(sender=None, **kw):
     for tcp_service in tcp_services:
         service, port, state = tcp_service.get('service'), tcp_service.get('port'), tcp_service.get('state')
 
-        # ruleset for initiating http enumeration.
-        if (
-            'http' in service and 'proxy' not in service \
-            or port in ['8081']
-        ) and state == 'open':
+        if is_http(service, port, state):
             http = HttpEnumeration()
             http.scan(ip, port, working_directory)
 
-        if 'ftp' in service and state == 'open':
+        if is_ftp(service, port, state):
             ftp = FtpEnumeration()
             ftp.scan(ip, port, working_directory)
 
-        if port == '445' and state == 'open':
+        if is_nbt(service, port, state):
             nbt = NbtEnumeration()
             nbt.scan(ip, working_directory)
 

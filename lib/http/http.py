@@ -1,5 +1,11 @@
 #!/usr/bin/env python
+""" 
+The HTTP module performs http-related 
+enumeration tasks.
 
+@author: Steve Coward (steve<at>sugarstack.io)
+@version: 1.0
+"""
 import os, sys
 from ..generic_service import GenericService
 
@@ -15,6 +21,18 @@ class HttpEnumeration(GenericService):
     DIRB_WORDLISTS = '/usr/share/dirb/wordlists/common.txt,/opt/metasploit/apps/pro/msf3/data/wmap/wmap_dirs.txt'
 
     def scan(self, ip, port, directory):
+        """Iterates over PROCESSES and builds
+        the specific parameters required for 
+        command line execution of each process.
+
+        @param ip: IP address being processed.
+        
+        @param port: Port which the HTTP process 
+        is running on.
+
+        @param directory: Directory path where 
+        final command output will go.
+        """
         for process in self.PROCESSES:
             self.start_processes(process, params={
                 'host': ip,
@@ -25,5 +43,12 @@ class HttpEnumeration(GenericService):
             }, display_exception=False)
 
 if __name__ == '__main__':
+    """For testing purposes, this 
+    module can be executed as a script.
+    Use the following syntax from the root
+    directory of enumerator:
+
+    python -m lib.http.http <ip> <port> <output directory>
+    """
     http = HttpEnumeration()
     http.scan(sys.argv[1], sys.argv[2], sys.argv[3])

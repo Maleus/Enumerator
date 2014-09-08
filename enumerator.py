@@ -1,11 +1,21 @@
 #!/usr/bin/env python
-#
-# Author: Maleus
-# Date: 7.28.14
-# Notes: Made for Kali Linux, not tested on other distros.
-#
-# import ipdb; ipdb.set_trace()
+"""enumerator is a script built to assist in
+automating the tedious task of enumerating 
+a target or list of targets during a penetration
+test.
 
+@author: Maleus
+@date: 2014-07-28
+@author: Steve Coward (steve<at>sugarstack.io)
+@version: 0.1
+@notes: Built for Kali Linux, not tested on other distros. 
+        The current version of enumerator requires the 
+        following applications to be installed:
+            - nmap
+            - nikto, dirb (http enumeration)
+            - hydra (ftp enumeration)
+            - enum4linux (netbios enumeration)
+"""
 import argparse
 import sys
 import os
@@ -30,13 +40,13 @@ if __name__ == '__main__':
     
     ip_list = []
 
-    # handle empty file
+    # Handle empty file
     if file_contents == '':
         print '[!] The contents of the provided file are empty.'
         sys.exit(0)
     else:
-        # turn the file contents into a list of ip addresses
-        # trim blank lines out of list
+        # Turn the file contents into a list of ip addresses
+        # Trim blank lines out of list
         ip_list = file_contents.split('\n')
         ip_list = [ip for ip in ip_list if ip != '']
 
