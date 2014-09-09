@@ -22,9 +22,6 @@ Linux distros, please ensure the following tools are installed:
 Installation
 ------------
 
-Either clone the enumerator repo or download the zip archive and extract
-to the path of your choice.
-
 While not required, it is advised to create a virtualenv for enumerator
 to avoid conflicts with different versions of required packages. If
 you're unfamiliar with virtualenv, please follow `this
@@ -35,7 +32,13 @@ install the required libraries:
 
 .. code:: sh
 
-    (venv) $ pip install -r requirements.txt
+    (venv) $ pip install enumerator
+
+or alternatively, if you have cloned the enumerator repository:
+
+.. code:: sh
+
+    (venv) $ python setup.py install
 
 Usage
 -----
@@ -45,7 +48,7 @@ with a list of IP addresses, one per line.
 
 .. code:: sh
 
-    (venv) $ python enumerator.py /root/Desktop/hosts.txt
+    (venv) $ enumerator /root/Desktop/hosts.txt
 
 enumerator will then asynchronously begin scanning each host listed in
 ``hosts.txt`` using nmap. Once nmap finishes, the nmap results are
@@ -99,7 +102,7 @@ replacing names and input parameters as needed:
 
 .. code:: sh
 
-    (venv) $ python -m lib.<service>.<service> <ip> <port> <output directory>
+    (venv) $ python -m enumerator.lib.<service>.<service> <ip> <port> <output directory>
 
 Updating an existing service module:
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

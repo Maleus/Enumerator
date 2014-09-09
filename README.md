@@ -20,14 +20,18 @@ enumerator is built around the Kali Linux distro. To use this on other Linux dis
 Installation
 ----
 
-Either clone the enumerator repo or download the zip archive and extract to the path of your choice.
-
 While not required, it is advised to create a virtualenv for enumerator to avoid conflicts with different versions of required packages. If you're unfamiliar with virtualenv, please follow [this guide] [1].
 
 Use [pip] [2] to install the required libraries:
 
 ```sh
-(venv) $ pip install -r requirements.txt
+(venv) $ pip install enumerator
+```
+
+or alternatively, if you have cloned the enumerator repository:
+
+```sh
+(venv) $ python setup.py install
 ```
 
 Usage
@@ -36,7 +40,7 @@ Usage
 To run, enumerator takes a single parameter; a file path to a text file with a list of IP addresses, one per line.
 
 ```sh
-(venv) $ python enumerator.py /root/Desktop/hosts.txt
+(venv) $ enumerator /root/Desktop/hosts.txt
 ```
 
 enumerator will then asynchronously begin scanning each host listed in ``hosts.txt`` using nmap. Once nmap finishes, the nmap results are parsed and passed to a system which, based upon a simple set of rules, delegates further service-level enumeration to service-specific modules found in ``lib/``. Each service module defines specific enumeration applications to be run, and will run each process against the target, writing any results to file for review. 
@@ -63,7 +67,7 @@ enumerator is designed to be (relatively) easily extended for additional service
 In order to test a newly created service module, it is much easier to test by invoking the module directly as opposed to running enumerator. Make sure that your new service module follows the same syntax as existing module scripts at the very bottom of the script. Update those calls to match the syntax required for your new service module. To run, use the following syntax from the root directory of enumerator, replacing names and input parameters as needed:
 
 ```sh
-(venv) $ python -m lib.<service>.<service> <ip> <port> <output directory>
+(venv) $ python -m enumerator.lib.<service>.<service> <ip> <port> <output directory>
 ```
 
 #### Updating an existing service module:
