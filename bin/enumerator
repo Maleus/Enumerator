@@ -23,7 +23,7 @@ import subprocess
 import multiprocessing
 from multiprocessing import Process
 
-from lib import nmap
+from enumerator.lib import nmap
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='This is intended to simplify the common enumeration \
@@ -36,7 +36,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     file_contents = args.filepath.read()
-    current_dir = '%s/results' % os.path.dirname(os.path.realpath(__file__))
+    # current_dir = '%s/results' % os.path.dirname(os.path.abspath(__file__))
+    current_dir = 'results'
     
     ip_list = []
 
