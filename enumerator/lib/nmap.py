@@ -30,9 +30,8 @@ PROCESSES = [
     'nmap -Pn -T4 -sU -sV --open --top-ports 10 -oN %(output_dir)s/%(host)s-udp-standard.txt -oG %(output_dir)s/%(host)s-udp-greppable.txt %(host)s',
 ]
 
-# Very broad match for greppable nmap output.
-# e.g. will match: 22/open/tcp//tcpwrapped///, 8081/open/tcp//http//Node.js (Express middleware)/
-SERVICE_PATTERN = re.compile(r'Ports: (\d+\/.+\/)')
+# Refined regex pattern for greppable nmap output.
+SERVICE_PATTERN = re.compile('\s(\d+)\/([^/]+)?\/([^/]+)?\/([^/]+)?\/([^/]+)?\/([^/]+)?\/([^/]+)?\/')
 
 # Instantiate signal to delegate further service enumeration.
 delegate_service_enumeration = signal('delegate_service_enumeration')
@@ -62,22 +61,11 @@ def parse_results(ip, directory):
             contents = fh.read()
 
         # Locate service-related output from file contents
-        match = SERVICE_PATTERN.search(contents)
-
-        # Store regex matched string, if it fails, match is an empty string.
-        try:
-            match = match.groups()[0]
-        except:
-            match = ''
-
-        # Services are separated by a comma. Strip any whitespace.
-        services = match.split(',')
-        services = [service_entry.strip() for service_entry in services]
-
+        services = SERVICE_PATTERN.findall(contents)
         for service_entry in services:
-            # Split apart the service data, excluding the last list element (end of string).
+            print service_entry
             try:
-                port, state, protocol, owner, service, rpc_info, version = service_entry.split('/')[:-1]
+                port, state, protocol, owner, service, rpc_info, version = service_entry
                 results[ip][protocol].append({
                     'port': port,
                     'state': state,
