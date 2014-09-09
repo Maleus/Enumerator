@@ -63,7 +63,6 @@ def parse_results(ip, directory):
         # Locate service-related output from file contents
         services = SERVICE_PATTERN.findall(contents)
         for service_entry in services:
-            print service_entry
             try:
                 port, state, protocol, owner, service, rpc_info, version = service_entry
                 results[ip][protocol].append({
