@@ -1,0 +1,60 @@
+#!/usr/bin/env python
+"""enumerator is a script built to assist in
+automating the tedious task of enumerating 
+a target or list of targets during a penetration
+test.
+
+@author: Maleus
+@date: 2014-07-28
+@author: Steve Coward (steve<at>sugarstack.io)
+@version: 0.1
+@notes: Built for Kali Linux, not tested on other distros. 
+        The current version of enumerator requires the 
+        following applications to be installed:
+            - nmap
+            - nikto, dirb (http enumeration)
+            - hydra (ftp enumeration)
+            - enum4linux (netbios enumeration)
+"""
+import argparse
+import sys
+import os
+import subprocess
+import multiprocessing
+from multiprocessing import Process
+
+from enumerator.lib import nmap
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='This is intended to simplify the common enumeration \
+        actions taken during a pentest engagement. The only parameter required is a path to a list of \
+        host IP addresses. nmap processes are then kicked off which in turn intelligently kick off ftp \
+        scanning (anonymous & hydra), enum4linux, dirb or nikto processes depending on nmap service \
+        enumeration output. All output is organized and saved to local folders named by IP address.')
+
+    parser.add_argument('filepath', metavar='file path', type=argparse.FileType('r'), help='path to file of IP addresses')
+    args = parser.parse_args()
+    
+    file_contents = args.filepath.read()
+    # current_dir = '%s/results' % os.path.dirname(os.path.abspath(__file__))
+    current_dir = 'results'
+    
+    ip_list = []
+
+    # Handle empty file
+    if file_contents == '':
+        print '[!] The contents of the provided file are empty.'
+        sys.exit(0)
+    else:
+        # Turn the file contents into a list of ip addresses
+        # Trim blank lines out of list
+        ip_list = file_contents.split('\n')
+        ip_list = [ip for ip in ip_list if ip != '']
+
+
+    print '[+] IP list parsed, sending hosts to nmap...'
+    for ip in ip_list:
+        jobs = []
+        p = multiprocessing.Process(target=nmap.scan, args=(ip,current_dir))
+        jobs.append(p)
+        p.start()
