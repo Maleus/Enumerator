@@ -36,8 +36,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
     
     file_contents = args.filepath.read()
-    # current_dir = '%s/results' % os.path.dirname(os.path.abspath(__file__))
-    current_dir = 'results'
+    results_dir = 'results'
     
     ip_list = []
 
@@ -53,8 +52,7 @@ if __name__ == '__main__':
 
 
     print '[+] IP list parsed, sending hosts to nmap...'
-    for ip in ip_list:
-        jobs = []
-        p = multiprocessing.Process(target=nmap.scan, args=(ip,current_dir))
-        jobs.append(p)
-        p.start()
+    pool = multiprocessing.Pool(multiprocessing.cpu_count() * 2, maxtasksperchild=2)
+    pool.map_async(nmap.scan, [(ip,results_dir) for ip in ip_list])
+    pool.close()
+    pool.join()
