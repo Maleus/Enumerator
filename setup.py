@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
     name='enumerator',
-    version='0.1.0',
+    version='0.1.1',
     author='Erik Dominguez, Steve Coward',
     author_email='maleus@overflowsecurity.com, steve@sugarstack.io',
     scripts=['bin/enumerator'],

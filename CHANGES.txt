@@ -1,1 +1,2 @@
 v0.1, 2014-09-07 -- Initial release of new code.
+v0.1.1, 2014-09-10 -- Corrected issue with flooding system with processes, now moved to use multiprocessing.Pool().

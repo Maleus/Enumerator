@@ -92,12 +92,13 @@ def start_processes(process, ip, directory):
 
     subprocess.check_output(process % {'output_dir': directory, 'host': ip}, shell=True)
 
-def scan(ip, directory):
+def scan(args):
     """Build output folder structure and initiate multiprocessing threads
 
-    @param ip: IP address being scanned
-    @param directory: Directory to store command output
+    @param args: tuple containing IP address and output directory
     """
+
+    ip, directory = args
     
     # Ensure output directory exists; if it doesn't, create it
     output_dir = '%s/%s' % (directory, ip)
