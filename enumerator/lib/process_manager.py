@@ -7,7 +7,9 @@ related methods required by enumerator.
 """
 import subprocess
 
+
 class ProcessManager(object):
+
     def start_processes(self, process, **flags):
         """Initiates command line processes.
 

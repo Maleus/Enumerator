@@ -6,8 +6,9 @@ setup(
     author='Erik Dominguez, Steve Coward',
     author_email='maleus@overflowsecurity.com, steve@sugarstack.io',
     scripts=['bin/enumerator'],
-    packages=['enumerator', 'enumerator.lib', 'enumerator.lib.ftp', 'enumerator.lib.http', 'enumerator.lib.nbt'],
-    package_data = {
+    packages=['enumerator', 'enumerator.lib', 'enumerator.lib.ftp',
+              'enumerator.lib.http', 'enumerator.lib.nbt'],
+    package_data={
         '': ['*.txt'],
     },
     url='http://pypi.python.org/pypi/enumerator/',

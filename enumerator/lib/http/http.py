@@ -6,9 +6,11 @@ enumeration tasks.
 @author: Steve Coward (steve<at>sugarstack.io)
 @version: 1.0
 """
-import os, sys
+import os
+import sys
 from ..process_manager import ProcessManager
 from ..generic_service import GenericService
+
 
 class HttpEnumeration(GenericService, ProcessManager):
     LIB_PATH = os.path.dirname(os.path.realpath(__file__))
@@ -33,7 +35,7 @@ class HttpEnumeration(GenericService, ProcessManager):
         @param service_parameters: Dictionary with
         key:value pairs of service-related data.
         """
-        
+
         ip = service_parameters.get('ip')
         port = service_parameters.get('port')
 

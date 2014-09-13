@@ -6,14 +6,17 @@ enumeration tasks.
 @author: Steve Coward (steve<at>sugarstack.io)
 @version: 1.0
 """
-import os, sys
+import os
+import sys
 from ..process_manager import ProcessManager
 from ..generic_service import GenericService
+
 
 class NbtEnumeration(GenericService, ProcessManager):
     LIB_PATH = os.path.dirname(os.path.realpath(__file__))
     SERVICE_DEFINITION = 'port:445'
-    PROCESSES = ['enum4linux -a %(host)s > %(output_dir)s/%(host)s-nbt-enum4linux.txt',]
+    PROCESSES = [
+        'enum4linux -a %(host)s > %(output_dir)s/%(host)s-nbt-enum4linux.txt', ]
 
     def scan(self, directory, service_parameters):
         """Iterates over PROCESSES and builds
@@ -26,7 +29,7 @@ class NbtEnumeration(GenericService, ProcessManager):
         @param service_parameters: Dictionary with
         key:value pairs of service-related data.
         """
-        
+
         for process in self.PROCESSES:
             self.start_processes(process, params={
                 'host': service_parameters.get('ip'),

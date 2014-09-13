@@ -17,6 +17,7 @@ ftp = FtpEnumeration()
 nbt = NbtEnumeration()
 service_modules = [http, ftp, nbt]
 
+
 def receive_service_data(sender=None, **flags):
     """Receive data either directly (not implemented) or via signal. Delegate 
     service enumeration depending on reported services.
