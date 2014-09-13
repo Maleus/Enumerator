@@ -7,10 +7,12 @@ enumeration tasks.
 @version: 1.0
 """
 import os, sys
+from ..process_manager import ProcessManager
 from ..generic_service import GenericService
 
-class FtpEnumeration(GenericService):
+class FtpEnumeration(GenericService, ProcessManager):
     LIB_PATH = os.path.dirname(os.path.realpath(__file__))
+    SERVICE_DEFINITION = 'service:ftp'
     PROCESSES = [
         'nmap -Pn -p %(port)s \
             --script=ftp-anon,ftp-bounce,ftp-libopie,ftp-proftpd-backdoor,ftp-vsftpd-backdoor,ftp-vuln-cve2010-4221 \
@@ -19,23 +21,22 @@ class FtpEnumeration(GenericService):
             -o %(output_dir)s/%(host)s-ftp-%(port)s-hydra.txt ftp://%(host)s:%(port)s',
     ]
 
-    def scan(self, ip, port, directory):
+    def scan(self, directory, service_parameters):
         """Iterates over PROCESSES and builds
         the specific parameters required for 
         command line execution of each process.
 
-        @param ip: IP address being processed.
-        
-        @param port: Port which the FTP process 
-        is running on.
-
         @param directory: Directory path where 
         final command output will go.
+
+        @param service_parameters: Dictionary with
+        key:value pairs of service-related data.
         """
+        
         for process in self.PROCESSES:
             self.start_processes(process, params={
-                'host': ip,
-                'port': port,
+                'host': service_parameters.get('ip'),
+                'port': service_parameters.get('port'),
                 'output_dir': directory,
                 'lib_path': self.LIB_PATH,
             }, display_exception=False)
@@ -49,4 +50,4 @@ if __name__ == '__main__':
     python -m lib.ftp.ftp <ip> <port> <output directory>
     """
     ftp = FtpEnumeration()
-    ftp.scan(sys.argv[1], sys.argv[2], sys.argv[3])
+    ftp.scan(sys.argv[3], dict(ip=sys.argv[1], port=sys.argv[2]))
