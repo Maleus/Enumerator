@@ -11,10 +11,13 @@ enumeration.
 from .http.http import HttpEnumeration
 from .ftp.ftp import FtpEnumeration
 from .nbt.nbt import NbtEnumeration
+from .telnet.telnet import TelnetEnumeration
 
 http = HttpEnumeration()
 ftp = FtpEnumeration()
 nbt = NbtEnumeration()
+telnet = TelnetEnumeration
+
 service_modules = [http, ftp, nbt]
 
 

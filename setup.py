@@ -7,7 +7,7 @@ setup(
     author_email='maleus@overflowsecurity.com, steve@sugarstack.io',
     scripts=['bin/enumerator'],
     packages=['enumerator', 'enumerator.lib', 'enumerator.lib.ftp',
-              'enumerator.lib.http', 'enumerator.lib.nbt'],
+              'enumerator.lib.http', 'enumerator.lib.nbt','enumerator.lib.telnet'],
     package_data={
         '': ['*.txt'],
     },
