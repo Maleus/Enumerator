@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 """ 
-The FTP module performs ftp-related 
+The Telnet module performs ftp-related 
 enumeration tasks.
 
-@author: Steve Coward (steve<at>sugarstack.io)
+@author: Erik Dominguez (maleus<at>overflowsecurity.com)
 @version: 1.0
 """
 import os
