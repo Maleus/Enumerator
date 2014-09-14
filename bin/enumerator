@@ -32,12 +32,13 @@ if __name__ == '__main__':
         scanning (anonymous & hydra), enum4linux, dirb or nikto processes depending on nmap service \
         enumeration output. All output is organized and saved to local folders named by IP address.')
 
-    parser.add_argument('filepath', metavar='file path', type=argparse.FileType('r'), help='path to file of IP addresses')
+    parser.add_argument('filepath', metavar='file path', type=argparse.FileType(
+        'r'), help='path to file of IP addresses')
     args = parser.parse_args()
-    
+
     file_contents = args.filepath.read()
     results_dir = 'results'
-    
+
     ip_list = []
 
     # Handle empty file
@@ -50,9 +51,9 @@ if __name__ == '__main__':
         ip_list = file_contents.split('\n')
         ip_list = [ip for ip in ip_list if ip != '']
 
-
     print '[+] IP list parsed, sending hosts to nmap...'
-    pool = multiprocessing.Pool(multiprocessing.cpu_count() * 2, maxtasksperchild=2)
-    pool.map_async(nmap.scan, [(ip,results_dir) for ip in ip_list])
+    pool = multiprocessing.Pool(
+        multiprocessing.cpu_count() * 2, maxtasksperchild=2)
+    pool.map_async(nmap.scan, [(ip, results_dir) for ip in ip_list])
     pool.close()
     pool.join()

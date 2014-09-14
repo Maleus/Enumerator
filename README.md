@@ -1,10 +1,11 @@
-enumerator 0.1
+enumerator
 =========
 
 &nbsp;
 #### Contributors:
-* Maleus (original concept and script author) - http://overflowsecurity.com
-* Steve Coward (felux) - http://sugarstack.io
+
+- Erik Dominguez (IRC: Maleus | Twitter: @Maleus21) (original concept and script author) - http://overflowsecurity.com 
+- Steve Coward (IRC: felux | Twitter: @sugarstackio) - http://sugarstack.io
 
 enumerator is a tool built to assist in automating the often tedious task of enumerating a target or list of targets during a penetration test.
 
@@ -58,11 +59,11 @@ enumerator is designed to be (relatively) easily extended for additional service
 * Create folder in ``lib/`` for your service module and related files.
 * Create service module file and \_\_init\__\.py inside the folder created above.
 * The service module should be identical in syntax to existing service modules.
-* The ``PROCESSES`` constant should contain the literal command(s) to be run. Follow the named parameter syntax for any variable strings.
+* ``SERVICE_DEFINITION`` is a special set of key:value rules to classify a service. Details below.
+* ``PROCESSES`` should contain the literal command(s) to be run. Follow the named parameter syntax for any variable strings.
 * Update the ``params`` dictionary within the ``scan()`` method to match parameterized string vars set in ``PROCESSES``.
 * In ``lib/delegator.py``, import your new module along with the existing module imports.
-* Create a new method following the format ``def is_<service_name>`` and use any combination of ``service``, ``port`` and ``state`` to create new service classification rules.
-* Add a conditional in ``receive_service_data()`` to instantiate your new service module when the defined service rules are matched.
+* In ``lib/delegator.py``, instantiate your service module and add the object to the ``service_modules`` list.
 
 In order to test a newly created service module, it is much easier to test by invoking the module directly as opposed to running enumerator. Make sure that your new service module follows the same syntax as existing module scripts at the very bottom of the script. Update those calls to match the syntax required for your new service module. To run, use the following syntax from the root directory of enumerator, replacing names and input parameters as needed:
 
@@ -72,7 +73,13 @@ In order to test a newly created service module, it is much easier to test by in
 
 #### Updating an existing service module:
 * To add a new service enumeration command to an existing module, simply update ``PROCESSES`` with the command to be invoked. Be sure that any named parameters are passed in the ``scan()`` call.
-* To update service classification rules, edit the rule definition methods in ``lib/delegator.py``.
+
+#### Creating and Updating service definitions
+``SERVICE_DEFINITION`` defines what attributes classify a particular service. Two keys, ``service`` and ``port`` are available to define the service. Following two examples and how they translate:
+
+- ``service:ftp`` - The value ``'ftp'`` should be present in nmap's 'service' value.
+- ``service:http,-proxy or port:8081`` - The value ``'http'`` should be in 'service', the value ``'proxy'`` should **not** be in 'service' or the value ``'port'`` should contain the value ``'8081'``.
+
 
 #### Updating nmap process command line parameters:
 

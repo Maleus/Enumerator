@@ -31,11 +31,13 @@ PROCESSES = [
 ]
 
 # Refined regex pattern for greppable nmap output.
-SERVICE_PATTERN = re.compile('\s(\d+)\/([^/]+)?\/([^/]+)?\/([^/]+)?\/([^/]+)?\/([^/]+)?\/([^/]+)?\/')
+SERVICE_PATTERN = re.compile(
+    '\s(\d+)\/([^/]+)?\/([^/]+)?\/([^/]+)?\/([^/]+)?\/([^/]+)?\/([^/]+)?\/')
 
 # Instantiate signal to delegate further service enumeration.
 delegate_service_enumeration = signal('delegate_service_enumeration')
 delegate_service_enumeration.connect(delegator.receive_service_data)
+
 
 def parse_results(ip, directory):
     """Find greppable nmap scan output, extract service data.
@@ -75,22 +77,26 @@ def parse_results(ip, directory):
             except Exception as exception:
                 pass
 
-        # Clean up scan files used for enumerator, standard nmap output files can stay.
+        # Clean up scan files used for enumerator, standard nmap output files
+        # can stay.
         os.remove(output_file)
 
     return results
+
 
 def start_processes(process, ip, directory):
     """Receive a shell command statement and execute it.
 
     @param process: Shell command
-    
+
     @param output_dir: Directory to store command output
-    
+
     @param ip IP address being scanned
     """
 
-    subprocess.check_output(process % {'output_dir': directory, 'host': ip}, shell=True)
+    subprocess.check_output(
+        process % {'output_dir': directory, 'host': ip}, shell=True)
+
 
 def scan(args):
     """Build output folder structure and initiate multiprocessing threads
@@ -99,7 +105,7 @@ def scan(args):
     """
 
     ip, directory = args
-    
+
     # Ensure output directory exists; if it doesn't, create it
     output_dir = '%s/%s' % (directory, ip)
     if not os.path.exists(output_dir):
@@ -109,8 +115,10 @@ def scan(args):
     for process in PROCESSES:
         start_processes(process, ip, output_dir)
 
-    # nmap scans have completed at this point, send results to delegation system.
-    delegation_result = delegate_service_enumeration.send('enumerator.lib.nmap', scan_results=parse_results(ip, output_dir), directory=output_dir)
+    # nmap scans have completed at this point, send results to delegation
+    # system.
+    delegation_result = delegate_service_enumeration.send(
+        'enumerator.lib.nmap', scan_results=parse_results(ip, output_dir), directory=output_dir)
 
 if __name__ == '__main__':
-    scan(sys.argv[1],sys.argv[2])
+    scan(sys.argv[1], sys.argv[2])
