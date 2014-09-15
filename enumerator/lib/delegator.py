@@ -16,9 +16,9 @@ from .telnet.telnet import TelnetEnumeration
 http = HttpEnumeration()
 ftp = FtpEnumeration()
 nbt = NbtEnumeration()
-telnet = TelnetEnumeration
+telnet = TelnetEnumeration()
 
-service_modules = [http, ftp, nbt]
+service_modules = [http, ftp, nbt, telnet]
 
 
 def receive_service_data(sender=None, **flags):
