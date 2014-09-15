@@ -38,13 +38,20 @@ or alternatively, if you have cloned the enumerator repository:
 Usage
 ----
 
-To run, enumerator takes a single parameter; a file path to a text file with a list of IP addresses, one per line.
+To run, enumerator takes one of two parameters; either a file path to a text file with a list of IP addresses, one per line.
+
+ - ``-f``, ``--file`` - path to a text file with a list of IP addresses, one per line.
+ - ``-s``, ``--single`` - a single IP address.
 
 ```sh
-(venv) $ enumerator /root/Desktop/hosts.txt
+(venv) $ enumerator -f /root/Desktop/hosts.txt
 ```
 
-enumerator will then asynchronously begin scanning each host listed in ``hosts.txt`` using nmap. Once nmap finishes, the nmap results are parsed and passed to a system which, based upon a simple set of rules, delegates further service-level enumeration to service-specific modules found in ``lib/``. Each service module defines specific enumeration applications to be run, and will run each process against the target, writing any results to file for review. 
+```sh
+(venv) $ enumerator -s 10.1.1.215
+```
+
+enumerator will then asynchronously begin scanning using nmap. Once nmap finishes, the nmap results are parsed and passed to a system which, based upon a simple set of rules, delegates further service-level enumeration to service-specific modules found in ``lib/``. Each service module defines specific enumeration applications to be run, and will run each process against the target, writing any results to file for review. 
 
 Currently, enumerator output is very minimal, so it's safe to say that when the enumerator script finishes, all hosts have been thoroughly scanned. Future versions of enumerator will have better in-time
 reporting of enumeration progress. Results are saved in ``results/``, and each host will have their own folder, within which all enumeration process output is saved for review once enumerator completes.
