@@ -26,7 +26,8 @@ import delegator
 
 # TODO: Change these values when ready to distribute.
 PROCESSES = [
-    'nmap -Pn -T4 -sS -sV -oN %(output_dir)s/%(host)s-tcp-standard.txt -oG %(output_dir)s/%(host)s-tcp-greppable.txt %(host)s',
+    'nmap -Pn -T4 -sS -A -oN %(output_dir)s/%(host)s-tcp-standard.txt -oG %(output_dir)s/%(host)s-tcp-greppable.txt %(host)s',
+    #'nmap -Pn -T4 -sS -sV -oN %(output_dir)s/%(host)s-tcp-standard.txt -oG %(output_dir)s/%(host)s-tcp-greppable.txt %(host)s',
     'nmap -Pn -T4 -sU -sV --open --top-ports 10 -oN %(output_dir)s/%(host)s-udp-standard.txt -oG %(output_dir)s/%(host)s-udp-greppable.txt %(host)s',
 ]
 

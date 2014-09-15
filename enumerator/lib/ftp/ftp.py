@@ -19,7 +19,7 @@ class FtpEnumeration(GenericService, ProcessManager):
         'nmap -Pn -p %(port)s \
             --script=ftp-anon,ftp-bounce,ftp-libopie,ftp-proftpd-backdoor,ftp-vsftpd-backdoor,ftp-vuln-cve2010-4221 \
             -oN %(output_dir)s/%(host)s-ftp-%(port)s-standard.txt %(host)s',
-        'hydra -L %(lib_path)s/user-password-micro.txt -P %(lib_path)s/user-password-micro.txt \
+        'hydra -L %(lib_path)s/user-password-tiny.txt -P %(lib_path)s/user-password-tiny.txt \
             -o %(output_dir)s/%(host)s-ftp-%(port)s-hydra.txt ftp://%(host)s:%(port)s',
     ]
 

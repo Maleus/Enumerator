@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """ 
-The Telnet module performs ftp-related 
+The Telnet module performs telnet-related 
 enumeration tasks.
 
 @author: Erik Dominguez (maleus<at>overflowsecurity.com)
@@ -19,7 +19,7 @@ class TelnetEnumeration(GenericService, ProcessManager):
         'nmap -Pn -p %(port)s \
             --script=telnet-encryption \
             -oN %(output_dir)s/%(host)s-telnet-%(port)s-standard.txt %(host)s',
-        'hydra -L %(lib_path)s/user-password-micro.txt -P %(lib_path)s/user-password-micro.txt \
+        'hydra -L %(lib_path)s/user-password-tiny.txt -P %(lib_path)s/user-password-tiny.txt \
             -o %(output_dir)s/%(host)s-telnet-%(port)s-hydra.txt %(host) telnet',
     ]
 
