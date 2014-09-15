@@ -32,24 +32,29 @@ if __name__ == '__main__':
         scanning (anonymous & hydra), enum4linux, dirb or nikto processes depending on nmap service \
         enumeration output. All output is organized and saved to local folders named by IP address.')
 
-    parser.add_argument('filepath', metavar='file path', type=argparse.FileType(
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('-f', '--file', metavar='file path', type=argparse.FileType(
         'r'), help='path to file of IP addresses')
+    group.add_argument('-s', '--single', metavar='single IP', type=str, help='Check single IP')
     args = parser.parse_args()
 
-    file_contents = args.filepath.read()
     results_dir = 'results'
-
     ip_list = []
 
-    # Handle empty file
-    if file_contents == '':
-        print '[!] The contents of the provided file are empty.'
-        sys.exit(0)
-    else:
-        # Turn the file contents into a list of ip addresses
-        # Trim blank lines out of list
-        ip_list = file_contents.split('\n')
-        ip_list = [ip for ip in ip_list if ip != '']
+    if args.file:
+        file_contents = args.file.read()
+        
+        # Handle empty file
+        if file_contents == '':
+            print '[!] The contents of the provided file are empty.'
+            sys.exit(1)
+        else:
+            # Turn the file contents into a list of ip addresses
+            # Trim blank lines out of list
+            ip_list = file_contents.split('\n')
+            ip_list = [ip for ip in ip_list if ip != '']
+    elif args.single:
+        ip_list = [args.single]
 
     print '[+] IP list parsed, sending hosts to nmap...'
     pool = multiprocessing.Pool(
