@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 """ 
-The Telnet module performs telnet-related 
+The Rpc Bind module performs rpcbind-related 
 enumeration tasks.
 
-@author: Erik Dominguez (maleus<at>overflowsecurity.com)
+@author: Erik Dominguez(maleus<at>overflowsecurity.com)
 @author: Steve Coward (steve<at>sugarstack.io)
 @version: 1.0
 """
@@ -13,16 +13,11 @@ from ..process_manager import ProcessManager
 from ..generic_service import GenericService
 
 
-class TelnetEnumeration(GenericService, ProcessManager):
+class RpcEnumeration(GenericService, ProcessManager):
     LIB_PATH = os.path.dirname(os.path.realpath(__file__))
-    SERVICE_DEFINITION ='service:telnet'
+    SERVICE_DEFINITION = 'port:111'
     PROCESSES = [
-        'nmap -Pn -p %(port)s \
-            --script=telnet-encryption \
-            -oN %(output_dir)s/%(host)s-telnet-%(port)s-standard.txt %(host)s',
-        'hydra -L %(lib_path)s/user-password-tiny.txt -P %(lib_path)s/user-password-tiny.txt \
-            -o %(output_dir)s/%(host)s-telnet-%(port)s-hydra.txt %(host)s telnet',
-    ]
+        'showmount -e %(host)s > %(output_dir)s/%(host)s-rpc-showmount.txt', ]
 
     def scan(self, directory, service_parameters):
         """Iterates over PROCESSES and builds
@@ -39,9 +34,7 @@ class TelnetEnumeration(GenericService, ProcessManager):
         for process in self.PROCESSES:
             self.start_processes(process, params={
                 'host': service_parameters.get('ip'),
-                'port': service_parameters.get('port'),
                 'output_dir': directory,
-                'lib_path': self.LIB_PATH,
             }, display_exception=False)
 
 if __name__ == '__main__':
@@ -50,7 +43,7 @@ if __name__ == '__main__':
     Use the following syntax from the root
     directory of enumerator:
 
-    python -m lib.telnet.telnet <ip> <port> <output directory>
+    python -m lib.rpc.rpc <ip> <output directory>
     """
-    telnet = TelnetEnumeration()
-    telnet.scan(sys.argv[3], dict(ip=sys.argv[1], port=sys.argv[2]))
+    rpc = RpcEnumeration()
+    rpc.scan(sys.argv[2], dict(ip=sys.argv[1]))

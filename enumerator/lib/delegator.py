@@ -12,13 +12,15 @@ from .http.http import HttpEnumeration
 from .ftp.ftp import FtpEnumeration
 from .nbt.nbt import NbtEnumeration
 from .telnet.telnet import TelnetEnumeration
+from rpc.rpc import RpcEnumeration
 
 http = HttpEnumeration()
 ftp = FtpEnumeration()
 nbt = NbtEnumeration()
 telnet = TelnetEnumeration()
+rpc = RpcEnumeration()
 
-service_modules = [http, ftp, nbt, telnet]
+service_modules = [http, ftp, nbt, telnet,rpc]
 
 
 def receive_service_data(sender=None, **flags):
