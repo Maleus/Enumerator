@@ -4,7 +4,7 @@ enumerator
 Contributors:
 
 -  Erik Dominguez (IRC: Maleus \| Twitter: @Maleus21) (original concept
-   and script author) - http://overflowsecurity.com
+   and script author, Maleus@overflowsecurity.com) - http://overflowsecurity.com
 -  Steve Coward (IRC: felux \| Twitter: @sugarstackio) -
    http://sugarstack.io
 
