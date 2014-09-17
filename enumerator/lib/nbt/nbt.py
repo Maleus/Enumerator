@@ -4,6 +4,7 @@ The Netbios module performs netbios-related
 enumeration tasks.
 
 @author: Steve Coward (steve<at>sugarstack.io)
+@author: Erik Dominguez (maleus<at>overflowsecurity.com)
 @version: 1.0
 """
 import os
@@ -16,7 +17,10 @@ class NbtEnumeration(GenericService, ProcessManager):
     LIB_PATH = os.path.dirname(os.path.realpath(__file__))
     SERVICE_DEFINITION = 'port:445'
     PROCESSES = [
-        'enum4linux -a %(host)s > %(output_dir)s/%(host)s-nbt-enum4linux.txt', ]
+        'nmap -Pn -p %(port)s \
+            --script=smb-os-discovery \
+            -oN %(output_dir)s/%(host)s-nbt-standard.txt %(host)s', 
+    ]
 
     def scan(self, directory, service_parameters):
         """Iterates over PROCESSES and builds
@@ -45,4 +49,5 @@ if __name__ == '__main__':
     python -m lib.nbt.nbt <ip> <output directory>
     """
     nbt = NbtEnumeration()
-    nbt.scan(sys.argv[2], dict(ip=sys.argv[1]))
+    #nbt.scan(sys.argv[2], dict(ip=sys.argv[1]))
+    nbt.scan(sys.argv[3], dict(ip=sys.argv[1], port=sys.argv[2]))
