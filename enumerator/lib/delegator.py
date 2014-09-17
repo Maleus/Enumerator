@@ -11,16 +11,16 @@ enumeration.
 from .http.http import HttpEnumeration
 from .ftp.ftp import FtpEnumeration
 from .nbt.nbt import NbtEnumeration
-from .telnet.telnet import TelnetEnumeration
-from rpc.rpc import RpcEnumeration
+from .ssh.ssh import SshEnumeration
+from .rpc.rpc import RpcEnumeration
 
 http = HttpEnumeration()
 ftp = FtpEnumeration()
 nbt = NbtEnumeration()
-telnet = TelnetEnumeration()
+ssh = SshEnumeration()
 rpc = RpcEnumeration()
 
-service_modules = [http, ftp, nbt, telnet,rpc]
+service_modules = [http, ftp, nbt, ssh, rpc]
 
 
 def receive_service_data(sender=None, **flags):
