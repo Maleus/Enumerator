@@ -26,7 +26,6 @@ class ProcessManager(object):
 
         try:
             subprocess.check_output(process % params, shell=True)
-	   # print process % params #Keep this commented out unless debugging a new module.
         except Exception as exception:
             if display_exception:
                 print '   [!] Error running process %s' % process.split(' ')[0]
