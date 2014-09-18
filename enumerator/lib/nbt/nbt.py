@@ -46,4 +46,4 @@ if __name__ == '__main__':
     python -m lib.nbt.nbt <ip> <output directory>
     """
     nbt = NbtEnumeration()
-    nbt.scan(sys.argv[3], dict(ip=sys.argv[1], port=sys.argv[2]))
+    nbt.scan(sys.argv[2], dict(ip=sys.argv[1]))
