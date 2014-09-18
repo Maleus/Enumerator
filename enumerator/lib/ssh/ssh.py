@@ -21,7 +21,7 @@ class SshEnumeration(GenericService, ProcessManager):
             --script=ssh-hostkey \
             -oN %(output_dir)s/%(host)s-ftp-%(port)s-standard.txt %(host)s',
         'hydra -L %(lib_path)s/user-password-tiny.txt -P %(lib_path)s/user-password-tiny.txt \
-            -o %(output_dir)s/%(host)s-ssh-%(port)s-hydra.txt %(host)s ssh',
+            -o %(output_dir)s/%(host)s-ssh-%(port)s-hydra.txt -t 4 %(host)s ssh',
     ]
 
     def scan(self, directory, service_parameters):
