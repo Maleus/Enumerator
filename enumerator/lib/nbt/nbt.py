@@ -15,7 +15,7 @@ from ..generic_service import GenericService
 
 class NbtEnumeration(GenericService, ProcessManager):
     LIB_PATH = os.path.dirname(os.path.realpath(__file__))
-    SERVICE_DEFINITION = 'port:445'
+    SERVICE_DEFINITION = 'port:139,445'
     PROCESSES = [
 	'enum4linux -a %(host)s > %(output_dir)s/%(host)s-nbt-enum4linux.txt',]
 

@@ -18,6 +18,27 @@ enumerator is built around the Kali Linux distro. To use this on other Linux dis
 
 **Windows is NOT supported at this time.**
 
+Available Service Modules
+----
+
+- FTP (hydra ftp login enumeration, nmap ftp NSE scripts)
+- HTTP (nikto scan, dirb directory enumeration)
+- Netbios (enum4linux scan)
+- RPC (showmount output)
+- SSH (hydra ssh login enumeration, nmap ssh NSE ssh-hostkey enumeration)
+
+Changelog
+----
+
+**v0.1.4** - Added SSH service module, changed all bruteforce options to use 'tiny' credentials file instead of 'micro', reverted nmap TCP scan options, minor bug fixes.
+
+**v0.1.3** - enumerator now takes either a file path or single host parameter to use.
+
+**v0.1.2** - Refactored service classification rules out to individual service modules and updated class GenericService to validate new service rules. Created ProcessManager to handle process related tasks.
+
+**v0.1.1** - Corrected issue with flooding system with processes, now moved to use multiprocessing.Pool().
+
+
 Installation
 ----
 
