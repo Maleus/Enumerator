@@ -2,14 +2,14 @@ from distutils.core import setup
 
 setup(
     name='enumerator',
-    version='0.1.3',
+    version='0.1.4',
     author='Erik Dominguez, Steve Coward',
     author_email='maleus@overflowsecurity.com, steve@sugarstack.io',
     maintainer='Steve Coward',
     maintainer_email='steve@sugarstack.io',
     scripts=['bin/enumerator'],
     packages=['enumerator', 'enumerator.lib', 'enumerator.lib.ftp',
-              'enumerator.lib.http', 'enumerator.lib.nbt','enumerator.lib.telnet'],
+              'enumerator.lib.http', 'enumerator.lib.nbt', 'enumerator.lib.rpc', 'enumerator.lib.ssh'],
     package_data={
         '': ['*.txt'],
     },

@@ -1,3 +1,5 @@
 v0.1, 2014-09-07 -- Initial release of new code.
 v0.1.1, 2014-09-10 -- Corrected issue with flooding system with processes, now moved to use multiprocessing.Pool().
 v0.1.2, 2014-09-12 -- Refactored service classification rules out to individual service modules and updated class GenericService to validate new service rules. Created ProcessManager to handle process related tasks.
+v0.1.3, 2014-09-14 -- enumerator now takes either a file path or single host parameter to use.
+v0.1.4, 2014-09-18 -- Added SSH service module, changed all bruteforce options to use 'tiny' credentials file instead of 'micro', reverted nmap TCP scan options, minor bug fixes.
