@@ -63,6 +63,6 @@ if __name__ == '__main__':
     print '[+] IP list parsed, sending hosts to nmap...'
     pool = multiprocessing.Pool(
         multiprocessing.cpu_count() * 2, maxtasksperchild=2)
-    pool.map_async(nmap.scan, [(ip, results_dir) for ip in ip_list])
+    pool.map_async(nmap.scan, [(ip, results_dir) for ip in ip_list]).get(9999999)
     pool.close()
     pool.join()
