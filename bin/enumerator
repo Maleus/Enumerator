@@ -22,6 +22,7 @@ import os
 import subprocess
 import multiprocessing
 from multiprocessing import Process
+from os.path import expanduser
 
 from enumerator.lib import nmap
 
@@ -38,7 +39,10 @@ if __name__ == '__main__':
     group.add_argument('-s', '--single', metavar='single IP', type=str, help='Check single IP')
     args = parser.parse_args()
 
-    results_dir = 'results'
+    # Make sure to put results in user's home dir rather than where Enumerator is executed.
+    # expanduser for compatibility.
+    results_dir = "{0}/enumerator_results".format(expanduser("~"))
+
     ip_list = []
 
     if args.file:
