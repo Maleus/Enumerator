@@ -40,7 +40,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Make sure to put results in user's home dir rather than where Enumerator is executed.
-    # expanduser for compatibility.
+    # expanduser for compatibility.  Probably should be configurable via an output flag.
     results_dir = "{0}/enumerator_results".format(expanduser("~"))
 
     ip_list = []
