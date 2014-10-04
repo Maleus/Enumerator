@@ -36,7 +36,6 @@ def receive_service_data(sender=None, **flags):
     ip = results.keys()[0]
 
     tcp_services = results[ip]['tcp']
-    udp_services = results[ip]['udp']
 
     for tcp_service in tcp_services:
         service, port = tcp_service.get('service'), tcp_service.get('port')

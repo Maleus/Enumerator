@@ -54,8 +54,6 @@ class GenericService(object):
         @param attributes: Dict value of a scanned service
         (service,port,state).
         """
-        service = attributes.get('service')
-        port = attributes.get('port')
         state = attributes.get('state')
 
         if state != 'open':

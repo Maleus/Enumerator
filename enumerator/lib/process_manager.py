@@ -25,8 +25,8 @@ class ProcessManager(object):
         display_exception = flags.get('display_exception')
 
         try:
-            subprocess.check_output(process % params, shell=True)    
-	except Exception as exception:
+            subprocess.check_output(process % params, shell=True)
+        except Exception as exception:
             if display_exception:
                 print '   [!] Error running process %s' % process.split(' ')[0]
                 print '   [!] Exception: %s' % exception
