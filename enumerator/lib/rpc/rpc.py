@@ -7,14 +7,12 @@ enumeration tasks.
 @author: Steve Coward (steve<at>sugarstack.io)
 @version: 1.0
 """
-import os
 import sys
 from ..process_manager import ProcessManager
 from ..generic_service import GenericService
 
 
 class RpcEnumeration(GenericService, ProcessManager):
-    LIB_PATH = os.path.dirname(os.path.realpath(__file__))
     SERVICE_DEFINITION = 'port:111'
     PROCESSES = [
         'showmount -e %(host)s > %(output_dir)s/%(host)s-rpc-showmount.txt', ]

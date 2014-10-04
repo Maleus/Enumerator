@@ -7,14 +7,12 @@ enumeration tasks.
 @author: Erik Dominguez (maleus<at>overflowsecurity.com)
 @version: 1.0
 """
-import os
 import sys
 from ..process_manager import ProcessManager
 from ..generic_service import GenericService
 
 
 class NbtEnumeration(GenericService, ProcessManager):
-    LIB_PATH = os.path.dirname(os.path.realpath(__file__))
     SERVICE_DEFINITION = 'port:139,445'
     PROCESSES = [
         'enum4linux -a %(host)s > %(output_dir)s/%(host)s-nbt-enum4linux.txt', ]

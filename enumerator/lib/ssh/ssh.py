@@ -7,20 +7,18 @@ enumeration tasks.
 @author: Erik Dominguez (maleus<at>overflowsecurity.com)
 @version: 1.0
 """
-import os
 import sys
 from ..process_manager import ProcessManager
 from ..generic_service import GenericService
 
 
 class SshEnumeration(GenericService, ProcessManager):
-    LIB_PATH = os.path.dirname(os.path.realpath(__file__))
     SERVICE_DEFINITION = 'service:ssh'
     PROCESSES = [
         'nmap -Pn -p %(port)s \
             --script=ssh-hostkey \
             -oN %(output_dir)s/%(host)s-ssh-%(port)s-standard.txt %(host)s',
-        'hydra -L %(lib_path)s/user-password-tiny.txt -P %(lib_path)s/user-password-tiny.txt \
+        'hydra -L %(static_path)s/user-password-tiny.txt -P %(static_path)s/user-password-tiny.txt \
             -o %(output_dir)s/%(host)s-ssh-%(port)s-hydra.txt -t 4 %(host)s ssh',
     ]
 
@@ -41,7 +39,7 @@ class SshEnumeration(GenericService, ProcessManager):
                 'host': service_parameters.get('ip'),
                 'port': service_parameters.get('port'),
                 'output_dir': directory,
-                'lib_path': self.LIB_PATH,
+                'static_path': self.static_path,
             }, display_exception=False)
 
 if __name__ == '__main__':

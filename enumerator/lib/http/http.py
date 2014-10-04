@@ -6,14 +6,12 @@ enumeration tasks.
 @author: Steve Coward (steve<at>sugarstack.io)
 @version: 1.0
 """
-import os
 import sys
 from ..process_manager import ProcessManager
 from ..generic_service import GenericService
 
 
 class HttpEnumeration(GenericService, ProcessManager):
-    LIB_PATH = os.path.dirname(os.path.realpath(__file__))
     SERVICE_DEFINITION = 'service:http,-proxy or port:8081'
     PROCESSES = [
         'nikto -F txt -o %(output_dir)s/%(host)s-http-%(port)s-nikto.txt -h %(host)s -p %(port)s',

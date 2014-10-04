@@ -6,10 +6,12 @@ service modules.
 @author: Steve Coward (steve<at>sugarstack.io)
 @version 1.0
 """
+import os
 import re
 
 
 class GenericService(object):
+    static_path = '%s/../static' % os.path.dirname(os.path.realpath(__file__))
     compiled_service_definition = None
 
     def __init__(self):
@@ -54,6 +56,8 @@ class GenericService(object):
         @param attributes: Dict value of a scanned service
         (service,port,state).
         """
+        service = attributes.get('service')
+        port = attributes.get('port')
         state = attributes.get('state')
 
         if state != 'open':
