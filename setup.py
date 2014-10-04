@@ -8,8 +8,7 @@ setup(
     maintainer='Steve Coward',
     maintainer_email='steve@sugarstack.io',
     scripts=['bin/enumerator'],
-    packages=['enumerator', 'enumerator.static', 'enumerator.lib', 'enumerator.lib.ftp',
-              'enumerator.lib.http', 'enumerator.lib.nbt', 'enumerator.lib.rpc', 'enumerator.lib.ssh'],
+    packages=['enumerator', 'enumerator.static', 'enumerator.lib', 'enumerator.lib.services'],
     package_data={
         '': ['*.txt'],
     },

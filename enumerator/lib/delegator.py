@@ -8,19 +8,7 @@ enumeration.
 @author: Steve Coward (steve<at>sugarstack.io)
 @version: 1.0
 """
-from .http.http import HttpEnumeration
-from .ftp.ftp import FtpEnumeration
-from .nbt.nbt import NbtEnumeration
-from .ssh.ssh import SshEnumeration
-from .rpc.rpc import RpcEnumeration
-
-http = HttpEnumeration()
-ftp = FtpEnumeration()
-nbt = NbtEnumeration()
-ssh = SshEnumeration()
-rpc = RpcEnumeration()
-
-service_modules = [http, ftp, nbt, ssh, rpc]
+from .services import service_modules
 
 
 def receive_service_data(sender=None, **flags):
