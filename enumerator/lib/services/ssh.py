@@ -8,19 +8,24 @@ enumeration tasks.
 @version: 1.0
 """
 import sys
+from .. import config
 from ..process_manager import ProcessManager
 from ..generic_service import GenericService
 
 
 class SshEnumeration(GenericService, ProcessManager):
     SERVICE_DEFINITION = 'service:ssh'
-    PROCESSES = [
-        'nmap -Pn -p %(port)s \
-            --script=ssh-hostkey \
+    PROCESSES = [{
+        'command': 'nmap -Pn -p %(port)s %(scan_mode)s \
             -oN %(output_dir)s/%(host)s-ssh-%(port)s-standard.txt %(host)s',
-        'hydra -L %(static_path)s/user-password-tiny.txt -P %(static_path)s/user-password-tiny.txt \
+        'normal': '-T4 --script=ssh-hostkey',
+        'stealth': '-T2'
+    }, {
+        'command': 'hydra -L %(static_path)s/user-password-%(scan_mode)s.txt -P %(static_path)s/user-password-%(scan_mode)s.txt \
             -o %(output_dir)s/%(host)s-ssh-%(port)s-hydra.txt -t 4 %(host)s ssh',
-    ]
+        'normal': 'tiny',
+        'stealth': 'micro',
+    }]
 
     def scan(self, directory, service_parameters):
         """Iterates over PROCESSES and builds
@@ -35,11 +40,12 @@ class SshEnumeration(GenericService, ProcessManager):
         """
 
         for process in self.PROCESSES:
-            self.start_processes(process, params={
+            self.start_processes(process.get('command'), params={
                 'host': service_parameters.get('ip'),
                 'port': service_parameters.get('port'),
                 'output_dir': directory,
                 'static_path': self.static_path,
+                'scan_mode': process.get(config.mode),
             }, display_exception=False)
 
 if __name__ == '__main__':

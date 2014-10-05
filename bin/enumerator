@@ -21,7 +21,7 @@ import sys
 import multiprocessing
 from os.path import expanduser
 
-from enumerator.lib import nmap
+from enumerator.lib import nmap, config
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='This is intended to simplify the common enumeration \
@@ -35,6 +35,11 @@ if __name__ == '__main__':
         'r'), help='path to file of IP addresses')
     group.add_argument(
         '-s', '--single', metavar='single IP', type=str, help='Check single IP')
+
+    parser.add_argument('-m', '--mode', metavar='scan mode', type=str, choices=[
+                        'normal', 'stealth'], default='normal', help='Type of scan to perform. Default is \
+                        normal and loud. "stealth" reduces some options for scan timing or IDS evasion.')
+
     args = parser.parse_args()
 
     # Make sure to put results in user's home dir rather than where Enumerator is executed.
@@ -58,6 +63,9 @@ if __name__ == '__main__':
             ip_list = [ip for ip in ip_list if ip != '']
     elif args.single:
         ip_list = [args.single]
+
+    # Set the scan mode config option.
+    config.mode = args.mode
 
     print '[+] IP list parsed, sending hosts to nmap...'
     pool = multiprocessing.Pool(

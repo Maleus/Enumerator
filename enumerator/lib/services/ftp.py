@@ -7,19 +7,24 @@ enumeration tasks.
 @version: 1.0
 """
 import sys
+from .. import config
 from ..process_manager import ProcessManager
 from ..generic_service import GenericService
 
 
 class FtpEnumeration(GenericService, ProcessManager):
     SERVICE_DEFINITION = 'service:ftp'
-    PROCESSES = [
-        'nmap -Pn -p %(port)s \
-            --script=ftp-anon,ftp-bounce,ftp-libopie,ftp-proftpd-backdoor,ftp-vsftpd-backdoor,ftp-vuln-cve2010-4221 \
+    PROCESSES = [{
+        'command': 'nmap -Pn -p %(port)s %(scan_mode)s \
             -oN %(output_dir)s/%(host)s-ftp-%(port)s-standard.txt %(host)s',
-        'hydra -L %(static_path)s/user-password-tiny.txt -P %(static_path)s/user-password-tiny.txt \
+        'normal': '-T4 --script=ftp-anon,ftp-bounce,ftp-libopie,ftp-proftpd-backdoor,ftp-vsftpd-backdoor,ftp-vuln-cve2010-4221',
+        'stealth': '-T2',
+    }, {
+        'command': 'hydra -L %(static_path)s/user-password-%(scan_mode)s.txt -P %(static_path)s/user-password-%(scan_mode)s.txt \
             -o %(output_dir)s/%(host)s-ftp-%(port)s-hydra.txt ftp://%(host)s:%(port)s',
-    ]
+        'normal': 'tiny',
+        'stealth': 'micro',
+    }]
 
     def scan(self, directory, service_parameters):
         """Iterates over PROCESSES and builds
@@ -34,11 +39,12 @@ class FtpEnumeration(GenericService, ProcessManager):
         """
 
         for process in self.PROCESSES:
-            self.start_processes(process, params={
+            self.start_processes(process.get('command'), params={
                 'host': service_parameters.get('ip'),
                 'port': service_parameters.get('port'),
                 'output_dir': directory,
                 'static_path': self.static_path,
+                'scan_mode': process.get(config.mode),
             }, display_exception=False)
 
 if __name__ == '__main__':

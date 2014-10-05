@@ -8,14 +8,18 @@ enumeration tasks.
 @version: 1.0
 """
 import sys
+from .. import config
 from ..process_manager import ProcessManager
 from ..generic_service import GenericService
 
 
 class NbtEnumeration(GenericService, ProcessManager):
     SERVICE_DEFINITION = 'port:139,445'
-    PROCESSES = [
-        'enum4linux -a %(host)s > %(output_dir)s/%(host)s-nbt-enum4linux.txt', ]
+    PROCESSES = [{
+        'command': 'enum4linux %(scan_mode)s %(host)s > %(output_dir)s/%(host)s-nbt-enum4linux.txt',
+        'normal': '-a',
+        'stealth': '-k -o',
+    }]
 
     def scan(self, directory, service_parameters):
         """Iterates over PROCESSES and builds
@@ -30,9 +34,10 @@ class NbtEnumeration(GenericService, ProcessManager):
         """
 
         for process in self.PROCESSES:
-            self.start_processes(process, params={
+            self.start_processes(process.get('command'), params={
                 'host': service_parameters.get('ip'),
                 'output_dir': directory,
+                'scan_mode': process.get(config.mode),
             }, display_exception=False)
 
 if __name__ == '__main__':

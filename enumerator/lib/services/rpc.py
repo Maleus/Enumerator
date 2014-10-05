@@ -8,14 +8,18 @@ enumeration tasks.
 @version: 1.0
 """
 import sys
+from .. import config
 from ..process_manager import ProcessManager
 from ..generic_service import GenericService
 
 
 class RpcEnumeration(GenericService, ProcessManager):
     SERVICE_DEFINITION = 'port:111'
-    PROCESSES = [
-        'showmount -e %(host)s > %(output_dir)s/%(host)s-rpc-showmount.txt', ]
+    PROCESSES = [{
+        'command': 'showmount -e %(host)s > %(output_dir)s/%(host)s-rpc-showmount.txt',
+        'normal': '',
+        'stealth': '',
+    }]
 
     def scan(self, directory, service_parameters):
         """Iterates over PROCESSES and builds
@@ -30,7 +34,7 @@ class RpcEnumeration(GenericService, ProcessManager):
         """
 
         for process in self.PROCESSES:
-            self.start_processes(process, params={
+            self.start_processes(process.get('command'), params={
                 'host': service_parameters.get('ip'),
                 'output_dir': directory,
             }, display_exception=False)

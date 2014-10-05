@@ -7,16 +7,22 @@ enumeration tasks.
 @version: 1.0
 """
 import sys
+from .. import config
 from ..process_manager import ProcessManager
 from ..generic_service import GenericService
 
 
 class HttpEnumeration(GenericService, ProcessManager):
     SERVICE_DEFINITION = 'service:http,-proxy or port:8081'
-    PROCESSES = [
-        'nikto -F txt -o %(output_dir)s/%(host)s-http-%(port)s-nikto.txt -h %(host)s -p %(port)s',
-        'dirb %(url)s %(wordlist)s -o %(output_dir)s/%(host)s-http-%(port)s-dirb.txt -r -S -w',
-    ]
+    PROCESSES = [{
+        'command': 'nikto -F txt %(scan_mode)s -o %(output_dir)s/%(host)s-http-%(port)s-nikto.txt -h %(host)s -p %(port)s',
+        'normal': '',
+        'stealth': '-Tuning 1 2',
+    }, {
+        'command': 'dirb %(url)s %(wordlist)s -o %(output_dir)s/%(host)s-http-%(port)s-dirb.txt -r -S -w %(scan_mode)s',
+        'normal': '',
+        'stealth': '-z 400',
+    }]
 
     # TODO: Make these configurable either at runtime or via config file.
     # On the Kali distro, both of these files/paths exist.
@@ -38,12 +44,13 @@ class HttpEnumeration(GenericService, ProcessManager):
         port = service_parameters.get('port')
 
         for process in self.PROCESSES:
-            self.start_processes(process, params={
+            self.start_processes(process.get('command'), params={
                 'host': ip,
                 'port': port,
                 'url': 'https://%s/' % ip if port == '443' else 'http://%s:%s/' % (ip, port),
                 'output_dir': directory,
                 'wordlist': self.DIRB_WORDLISTS,
+                'scan_mode': process.get(config.mode),
             }, display_exception=False)
 
 if __name__ == '__main__':
