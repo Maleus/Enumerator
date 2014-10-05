@@ -1,27 +1,25 @@
 #!/usr/bin/env python
 """ 
-The FTP module performs ftp-related 
+The Netbios module performs netbios-related 
 enumeration tasks.
 
 @author: Steve Coward (steve<at>sugarstack.io)
+@author: Erik Dominguez (maleus<at>overflowsecurity.com)
 @version: 1.0
 """
-import os
 import sys
+from .. import config
 from ..process_manager import ProcessManager
 from ..generic_service import GenericService
 
 
-class FtpEnumeration(GenericService, ProcessManager):
-    LIB_PATH = os.path.dirname(os.path.realpath(__file__))
-    SERVICE_DEFINITION = 'service:ftp'
-    PROCESSES = [
-        'nmap -Pn -p %(port)s \
-            --script=ftp-anon,ftp-bounce,ftp-libopie,ftp-proftpd-backdoor,ftp-vsftpd-backdoor,ftp-vuln-cve2010-4221 \
-            -oN %(output_dir)s/%(host)s-ftp-%(port)s-standard.txt %(host)s',
-        'hydra -L %(lib_path)s/user-password-tiny.txt -P %(lib_path)s/user-password-tiny.txt \
-            -o %(output_dir)s/%(host)s-ftp-%(port)s-hydra.txt ftp://%(host)s:%(port)s',
-    ]
+class NbtEnumeration(GenericService, ProcessManager):
+    SERVICE_DEFINITION = 'port:139,445'
+    PROCESSES = [{
+        'command': 'enum4linux %(scan_mode)s %(host)s > %(output_dir)s/%(host)s-nbt-enum4linux.txt',
+        'normal': '-a',
+        'stealth': '-k -o',
+    }]
 
     def scan(self, directory, service_parameters):
         """Iterates over PROCESSES and builds
@@ -36,11 +34,10 @@ class FtpEnumeration(GenericService, ProcessManager):
         """
 
         for process in self.PROCESSES:
-            self.start_processes(process, params={
+            self.start_processes(process.get('command'), params={
                 'host': service_parameters.get('ip'),
-                'port': service_parameters.get('port'),
                 'output_dir': directory,
-                'lib_path': self.LIB_PATH,
+                'scan_mode': process.get(config.mode),
             }, display_exception=False)
 
 if __name__ == '__main__':
@@ -49,7 +46,7 @@ if __name__ == '__main__':
     Use the following syntax from the root
     directory of enumerator:
 
-    python -m lib.ftp.ftp <ip> <port> <output directory>
+    python -m lib.nbt.nbt <ip> <output directory>
     """
-    ftp = FtpEnumeration()
-    ftp.scan(sys.argv[3], dict(ip=sys.argv[1], port=sys.argv[2]))
+    nbt = NbtEnumeration()
+    nbt.scan(sys.argv[2], dict(ip=sys.argv[1]))

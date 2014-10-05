@@ -1,23 +1,25 @@
 #!/usr/bin/env python
 """ 
-The Netbios module performs netbios-related 
+The Rpc Bind module performs rpcbind-related 
 enumeration tasks.
 
+@author: Erik Dominguez(maleus<at>overflowsecurity.com)
 @author: Steve Coward (steve<at>sugarstack.io)
-@author: Erik Dominguez (maleus<at>overflowsecurity.com)
 @version: 1.0
 """
-import os
 import sys
+from .. import config
 from ..process_manager import ProcessManager
 from ..generic_service import GenericService
 
 
-class NbtEnumeration(GenericService, ProcessManager):
-    LIB_PATH = os.path.dirname(os.path.realpath(__file__))
-    SERVICE_DEFINITION = 'port:139,445'
-    PROCESSES = [
-	'enum4linux -a %(host)s > %(output_dir)s/%(host)s-nbt-enum4linux.txt',]
+class RpcEnumeration(GenericService, ProcessManager):
+    SERVICE_DEFINITION = 'port:111'
+    PROCESSES = [{
+        'command': 'showmount -e %(host)s > %(output_dir)s/%(host)s-rpc-showmount.txt',
+        'normal': '',
+        'stealth': '',
+    }]
 
     def scan(self, directory, service_parameters):
         """Iterates over PROCESSES and builds
@@ -32,7 +34,7 @@ class NbtEnumeration(GenericService, ProcessManager):
         """
 
         for process in self.PROCESSES:
-            self.start_processes(process, params={
+            self.start_processes(process.get('command'), params={
                 'host': service_parameters.get('ip'),
                 'output_dir': directory,
             }, display_exception=False)
@@ -43,7 +45,7 @@ if __name__ == '__main__':
     Use the following syntax from the root
     directory of enumerator:
 
-    python -m lib.nbt.nbt <ip> <output directory>
+    python -m lib.rpc.rpc <ip> <output directory>
     """
-    nbt = NbtEnumeration()
-    nbt.scan(sys.argv[2], dict(ip=sys.argv[1]))
+    rpc = RpcEnumeration()
+    rpc.scan(sys.argv[2], dict(ip=sys.argv[1]))

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """enumerator is a script built to assist in
-automating the tedious task of enumerating 
+automating the tedious task of enumerating
 a target or list of targets during a penetration
 test.
 
@@ -8,8 +8,8 @@ test.
 @date: 2014-07-28
 @author: Steve Coward (steve<at>sugarstack.io)
 @version: 0.1
-@notes: Built for Kali Linux, not tested on other distros. 
-        The current version of enumerator requires the 
+@notes: Built for Kali Linux, not tested on other distros.
+        The current version of enumerator requires the
         following applications to be installed:
             - nmap
             - nikto, dirb (http enumeration)
@@ -18,13 +18,10 @@ test.
 """
 import argparse
 import sys
-import os
-import subprocess
 import multiprocessing
-from multiprocessing import Process
 from os.path import expanduser
 
-from enumerator.lib import nmap
+from enumerator.lib import nmap, config
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='This is intended to simplify the common enumeration \
@@ -36,18 +33,25 @@ if __name__ == '__main__':
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('-f', '--file', metavar='file path', type=argparse.FileType(
         'r'), help='path to file of IP addresses')
-    group.add_argument('-s', '--single', metavar='single IP', type=str, help='Check single IP')
+    group.add_argument(
+        '-s', '--single', metavar='single IP', type=str, help='Check single IP')
+
+    parser.add_argument('-m', '--mode', metavar='scan mode', type=str, choices=[
+                        'normal', 'stealth'], default='normal', help='Type of scan to perform. Default is \
+                        normal and loud. "stealth" reduces some options for scan timing or IDS evasion.')
+
     args = parser.parse_args()
 
     # Make sure to put results in user's home dir rather than where Enumerator is executed.
-    # expanduser for compatibility.  Probably should be configurable via an output flag.
+    # expanduser for compatibility.  Probably should be configurable via an
+    # output flag.
     results_dir = "{0}/enumerator_results".format(expanduser("~"))
 
     ip_list = []
 
     if args.file:
         file_contents = args.file.read()
-        
+
         # Handle empty file
         if file_contents == '':
             print '[!] The contents of the provided file are empty.'
@@ -60,9 +64,13 @@ if __name__ == '__main__':
     elif args.single:
         ip_list = [args.single]
 
+    # Set the scan mode config option.
+    config.mode = args.mode
+
     print '[+] IP list parsed, sending hosts to nmap...'
     pool = multiprocessing.Pool(
         multiprocessing.cpu_count() * 2, maxtasksperchild=2)
-    pool.map_async(nmap.scan, [(ip, results_dir) for ip in ip_list]).get(9999999)
+    pool.map_async(nmap.scan, [(ip, results_dir)
+                               for ip in ip_list]).get(9999999)
     pool.close()
     pool.join()

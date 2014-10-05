@@ -6,6 +6,7 @@ related methods required by enumerator.
 @version 1.0
 """
 import subprocess
+from subprocess import CalledProcessError
 
 
 class ProcessManager(object):
@@ -25,8 +26,12 @@ class ProcessManager(object):
         display_exception = flags.get('display_exception')
 
         try:
-            subprocess.check_output(process % params, shell=True)    
-	except Exception as exception:
+            devnull = open('/dev/null', 'w')
+            subprocess.check_output(
+                process % params, stderr=devnull, shell=True)
+        except CalledProcessError as process_exception:
+            print '   [!] File %s does not exist, skipping...' % process.split(' ')[0]
+        except Exception as exception:
             if display_exception:
                 print '   [!] Error running process %s' % process.split(' ')[0]
                 print '   [!] Exception: %s' % exception

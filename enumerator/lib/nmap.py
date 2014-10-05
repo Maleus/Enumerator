@@ -16,19 +16,22 @@ import sys
 import os
 import re
 import glob
-import time
 import subprocess
-import multiprocessing
-from multiprocessing import Process
 from blinker import signal
 
+import config
 import delegator
+from .process_manager import ProcessManager
 
-# TODO: Change these values when ready to distribute.
-PROCESSES = [
-    'nmap -Pn -T4 -sS -sV -oN %(output_dir)s/%(host)s-tcp-standard.txt -oG %(output_dir)s/%(host)s-tcp-greppable.txt %(host)s',
-    'nmap -Pn -T4 -sU -sV --open --top-ports 10 -oN %(output_dir)s/%(host)s-udp-standard.txt -oG %(output_dir)s/%(host)s-udp-greppable.txt %(host)s',
-]
+PROCESSES = [{
+    'command': 'nmap -Pn %(scan_mode)s -sS -oN %(output_dir)s/%(host)s-tcp-standard.txt -oG %(output_dir)s/%(host)s-tcp-greppable.txt %(host)s',
+    'normal': '-T4 -p- -sV',
+    'stealth': '-T2 -sV',
+}, {
+    'command': 'nmap -Pn %(scan_mode)s -sU --open -oN %(output_dir)s/%(host)s-udp-standard.txt -oG %(output_dir)s/%(host)s-udp-greppable.txt %(host)s',
+    'normal': '-T4 --top-ports 100 -sV',
+    'stealth': '-T2 --top-ports 10 -sV',
+}]
 
 # Refined regex pattern for greppable nmap output.
 SERVICE_PATTERN = re.compile(
@@ -84,20 +87,6 @@ def parse_results(ip, directory):
     return results
 
 
-def start_processes(process, ip, directory):
-    """Receive a shell command statement and execute it.
-
-    @param process: Shell command
-
-    @param output_dir: Directory to store command output
-
-    @param ip IP address being scanned
-    """
-
-    subprocess.check_output(
-        process % {'output_dir': directory, 'host': ip}, shell=True)
-
-
 def scan(args):
     """Build output folder structure and initiate multiprocessing threads
 
@@ -112,8 +101,13 @@ def scan(args):
         os.makedirs(output_dir)
 
     print '   [-] nmap: running TCP & UDP scans for host: %s' % ip
+    pm = ProcessManager()
     for process in PROCESSES:
-        start_processes(process, ip, output_dir)
+        pm.start_processes(process.get('command'), params={
+            'host': ip,
+            'output_dir': output_dir,
+            'scan_mode': process.get(config.mode),
+        })
 
     # nmap scans have completed at this point, send results to delegation
     # system.
